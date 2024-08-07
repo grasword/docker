@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:latest
+    networks:
+      - custom_network
+
+  alpine:
+    image: alpine:latest
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+    networks:
+      - custom_network
+    command: sh -c "apk add redis && redis-cli -h $$REDIS_HOST ping"
+
+networks:
+  custom_network:
+    driver: bridge
